@@ -1,0 +1,15 @@
+{
+  "name": "backend",
+  "private": true,
+  "type": "module",
+  "main": "src/app.ts",
+  "scripts": {
+    "dev": "node --watch --env-file-if-exists=../.env.local src/server.ts"
+  },
+  "dependencies": {
+    "@neondatabase/neon-js": "^0.7.0-beta",
+    "express": "^5.1.0",
+    "jose": "^6.0.11",
+    "zod": "^4.0.5"
+  }
+}

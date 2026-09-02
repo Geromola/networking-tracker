@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+/* Design tokens, in the shadcn/ui convention: every colour is an HSL triple
+   defined once here and referenced through Tailwind utilities, so light and
+   dark mode stay consistent without any component knowing which is active. */
+@theme {
+  --color-bg: hsl(0 0% 100%);
+  --color-surface: hsl(0 0% 100%);
+  --color-muted: hsl(240 5% 96%);
+  --color-fg: hsl(240 10% 4%);
+  --color-fg-muted: hsl(240 4% 46%);
+  --color-border: hsl(240 6% 90%);
+  --color-primary: hsl(240 6% 10%);
+  --color-primary-fg: hsl(0 0% 98%);
+  --color-danger: hsl(0 72% 51%);
+  --color-danger-fg: hsl(0 0% 98%);
+  --color-ring: hsl(240 5% 65%);
+
+  --color-high: hsl(0 72% 45%);
+  --color-high-bg: hsl(0 86% 97%);
+  --color-medium: hsl(35 92% 33%);
+  --color-medium-bg: hsl(48 96% 95%);
+  --color-low: hsl(215 16% 40%);
+  --color-low-bg: hsl(220 14% 96%);
+}
+
+@media (prefers-color-scheme: dark) {
+  @theme {
+    --color-bg: hsl(240 10% 4%);
+    --color-surface: hsl(240 6% 10%);
+    --color-muted: hsl(240 4% 16%);
+    --color-fg: hsl(0 0% 98%);
+    --color-fg-muted: hsl(240 5% 65%);
+    --color-border: hsl(240 4% 20%);
+    --color-primary: hsl(0 0% 98%);
+    --color-primary-fg: hsl(240 6% 10%);
+    --color-ring: hsl(240 5% 45%);
+
+    --color-high: hsl(0 91% 71%);
+    --color-high-bg: hsl(0 63% 18%);
+    --color-medium: hsl(48 96% 65%);
+    --color-medium-bg: hsl(35 80% 15%);
+    --color-low: hsl(215 20% 75%);
+    --color-low-bg: hsl(240 4% 18%);
+  }
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Respect a reduced-motion preference across every animated component. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

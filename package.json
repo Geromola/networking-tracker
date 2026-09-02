@@ -1,0 +1,14 @@
+{
+  "name": "networking-tracker",
+  "private": true,
+  "type": "module",
+  "workspaces": ["backend", "frontend"],
+  "scripts": {
+    "dev": "concurrently -n api,web -c cyan,magenta \"npm run dev -w backend\" \"npm run dev -w frontend\"",
+    "build": "npm run build -w frontend",
+    "test": "node --test backend/src/**/*.test.ts"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

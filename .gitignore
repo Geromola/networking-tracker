@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.vercel/
+.DS_Store
+
+# Secrets: every .env variant stays out of Git, except the placeholder template.
+.env
+.env.*
+!.env.example
+*.tsbuildinfo
