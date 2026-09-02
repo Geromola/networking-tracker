@@ -354,7 +354,36 @@ node --env-file=.env.local --test backend/src/rls.test.ts
 ### Output
 
 ```
-TODO_TEST_OUTPUT
+$ npm test
+
+✔ a missing name is rejected 
+✔ an empty name is rejected 
+✔ a whitespace-only name is rejected 
+✔ a name longer than 200 characters is rejected 
+✔ a valid name is trimmed and its inner whitespace collapsed 
+✔ priority accepts exactly high, medium, and low 
+✔ an invalid priority is rejected with a readable message 
+✔ priority defaults to medium when omitted 
+✔ a client-supplied user_id is stripped and never reaches the database 
+✔ blank optional fields become null rather than empty strings 
+✔ a patch only carries the keys the client actually sent 
+✔ a patch that blanks the name is still rejected 
+✔ an empty patch is rejected instead of issuing a no-op write 
+✔ an unknown sort column falls back to the default instead of being injected 
+✔ sorting by priority uses the rank column, not the text column 
+✔ an unrecognized priority filter is dropped rather than applied 
+✔ search is trimmed, and blank search means no filter 
+ℹ tests 18
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 1
+ℹ todo 0
+ℹ duration_ms 173.518
+
+(The one skipped test is the two-user RLS test, which runs once the
+TEST_USER_* credentials are set. Its output is added below.)
 ```
 
 ---
