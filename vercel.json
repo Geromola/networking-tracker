@@ -7,11 +7,23 @@
     },
     "backend": {
       "root": "backend",
-      "runtime": "nodejs24.x"
+      "framework": "express"
     }
   },
   "rewrites": [
-    { "source": "/api(/.*)?", "destination": { "type": "service", "service": "backend" } },
-    { "source": "/(.*)", "destination": { "type": "service", "service": "frontend" } }
+    {
+      "source": "/api(/.*)?",
+      "destination": {
+        "type": "service",
+        "service": "backend"
+      }
+    },
+    {
+      "source": "/(.*)",
+      "destination": {
+        "type": "service",
+        "service": "frontend"
+      }
+    }
   ]
 }

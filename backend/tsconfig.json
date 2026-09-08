@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    // Imports carry explicit .ts extensions because Node runs these sources
+    // directly via its native type stripping, with no build step.
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true,
+    "verbatimModuleSyntax": true,
+    // Required. Without strict mode, TypeScript stops narrowing the
+    // { ok: true } | { ok: false } result unions in validation.ts, and every
+    // call site that reads .message or .fields fails to compile.
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "types": ["node"]
+  },
+  "include": ["src"]
+}

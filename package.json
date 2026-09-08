@@ -5,9 +5,10 @@
   "scripts": {
     "dev": "concurrently -n api,web -c cyan,magenta \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",
     "build": "npm --prefix frontend run build",
-    "test": "node --test backend/src/**/*.test.ts",
+    "test": "npm run typecheck && node --test backend/src/**/*.test.ts",
     "test:rls": "node --env-file=.env.local --test backend/src/rls.test.ts",
-    "postinstall": "npm --prefix backend install --no-audit --no-fund && npm --prefix frontend install --no-audit --no-fund"
+    "postinstall": "npm --prefix backend install --no-audit --no-fund && npm --prefix frontend install --no-audit --no-fund",
+    "typecheck": "npm --prefix backend run typecheck && npm --prefix frontend run typecheck"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

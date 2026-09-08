@@ -8,7 +8,7 @@ account, and that ownership is enforced by Postgres itself through Row Level
 Security rather than by application code, so a bug in the API cannot expose one
 user's contacts to another.
 
-**Live app:** `TODO_LIVE_URL`
+**Live app:** https://networking-tracker-navy.vercel.app
 
 ---
 
@@ -398,6 +398,18 @@ Express app. Both are on one domain, so there is no CORS configuration.
 vercel link
 vercel --prod
 ```
+
+Vercel deploys this repo as **two services**, declared in
+[`vercel.json`](vercel.json): `frontend` (a static Vite build) and `backend`
+(a Node/Express service). Requests to `/api/*` are routed to the backend and
+everything else to the frontend, so the two halves are genuinely separate
+deployments that share one domain — which is why there is no CORS
+configuration anywhere in the codebase.
+
+The backend has its own `tsconfig.json` with `strict` enabled. This is not
+optional: without strict mode TypeScript stops narrowing the
+`{ ok: true } | { ok: false }` unions that `validation.ts` returns, and the
+build fails on every call site that reads `.message` or `.fields`.
 
 Then, in the Vercel project settings, add the environment variables:
 
