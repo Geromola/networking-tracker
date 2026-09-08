@@ -9,7 +9,8 @@
     "test:rls": "node --env-file=.env.local --test backend/src/rls.test.ts",
     "postinstall": "npm --prefix backend install --no-audit --no-fund && npm --prefix frontend install --no-audit --no-fund",
     "typecheck": "npm --prefix backend run typecheck && npm --prefix frontend run typecheck",
-    "test:all": "npm run typecheck && node --env-file=.env.local --test backend/src/**/*.test.ts"
+    "test:all": "npm run typecheck && node --env-file=.env.local --test backend/src/**/*.test.ts",
+    "smoke": "node --env-file=.env.local scripts/smoke.mjs https://networking-tracker-navy.vercel.app"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

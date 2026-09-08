@@ -416,6 +416,30 @@ Every assertion under *row level security keeps one user's contacts away from
 another* is a query made directly against the Neon Data API as a real signed-in
 user, with this project's backend not involved at all.
 
+### Production smoke test
+
+The tests above cover validation in isolation and ownership at the database.
+`npm run smoke` covers the seam neither one touches: the **deployed** Express
+service, reached over HTTPS with a real JWT, doing real CRUD. It cleans up
+after itself.
+
+```
+$ npm run smoke
+
+PASS  POST creates a contact (201)  — status 201
+PASS  name is normalized server-side  — got "Smoke Test"
+PASS  GET returns it
+PASS  GET honours priority filter + sort
+PASS  GET honours search
+PASS  PATCH updates it
+PASS  empty name rejected (400)  — "Name is required."
+PASS  invalid priority rejected (400)  — "Priority must be high, medium, or low."
+PASS  client-supplied user_id ignored
+PASS  DELETE removes it (204)  — status 204
+PASS  PATCH on a deleted contact is 404  — status 404
+11/11 passed
+```
+
 ---
 
 ## Deployment
