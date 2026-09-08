@@ -38,6 +38,14 @@ const configured = Boolean(
 const authBase = (NEON_AUTH_URL ?? "").replace(/\/+$/, "");
 
 /**
+ * Neon Auth rejects requests with no Origin header (MISSING_OR_NULL_ORIGIN),
+ * and validates the one it gets against the project's trusted origins. Node's
+ * fetch sends none, because a server has no origin — so the test states one
+ * explicitly, standing in for the browser it is simulating.
+ */
+const ORIGIN = process.env.TEST_ORIGIN ?? "http://localhost:5173";
+
+/**
  * Sign in over plain HTTP and exchange the session for a JWT.
  *
  * Done by hand rather than through the SDK because the SDK expects a browser's
@@ -48,7 +56,7 @@ const authBase = (NEON_AUTH_URL ?? "").replace(/\/+$/, "");
 async function signIn(email: string, password: string): Promise<string> {
   const signInResponse = await fetch(`${authBase}/sign-in/email`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", Origin: ORIGIN },
     body: JSON.stringify({ email, password }),
   });
 
@@ -61,7 +69,9 @@ async function signIn(email: string, password: string): Promise<string> {
     .map((entry) => entry.split(";")[0])
     .join("; ");
 
-  const tokenResponse = await fetch(`${authBase}/token`, { headers: { cookie } });
+  const tokenResponse = await fetch(`${authBase}/token`, {
+    headers: { cookie, Origin: ORIGIN },
+  });
   assert.ok(tokenResponse.ok, `token request failed for ${email}: ${tokenResponse.status}`);
 
   const { token } = (await tokenResponse.json()) as { token?: string };

@@ -348,43 +348,73 @@ proves the database enforces ownership on its own:
 To run it, add the two accounts' credentials to `.env.local` and:
 
 ```bash
-node --env-file=.env.local --test backend/src/rls.test.ts
+npm run test:rls    # the ownership test on its own
+npm run test:all    # every test, including the ownership test
 ```
+
+The test sends an explicit `Origin` header. Neon Auth rejects requests without
+one (`MISSING_OR_NULL_ORIGIN`), and Node's `fetch` sends none, because a server
+has no origin — so the test states the origin of the browser it stands in for.
 
 ### Output
 
+Validation tests only, as they run on a clean clone with no credentials:
+
 ```
 $ npm test
-
-✔ a missing name is rejected 
-✔ an empty name is rejected 
-✔ a whitespace-only name is rejected 
-✔ a name longer than 200 characters is rejected 
-✔ a valid name is trimmed and its inner whitespace collapsed 
-✔ priority accepts exactly high, medium, and low 
-✔ an invalid priority is rejected with a readable message 
-✔ priority defaults to medium when omitted 
-✔ a client-supplied user_id is stripped and never reaches the database 
-✔ blank optional fields become null rather than empty strings 
-✔ a patch only carries the keys the client actually sent 
-✔ a patch that blanks the name is still rejected 
-✔ an empty patch is rejected instead of issuing a no-op write 
-✔ an unknown sort column falls back to the default instead of being injected 
-✔ sorting by priority uses the rank column, not the text column 
-✔ an unrecognized priority filter is dropped rather than applied 
-✔ search is trimmed, and blank search means no filter 
+...
 ℹ tests 18
-ℹ suites 0
 ℹ pass 17
 ℹ fail 0
-ℹ cancelled 0
 ℹ skipped 1
-ℹ todo 0
-ℹ duration_ms 173.518
-
-(The one skipped test is the two-user RLS test, which runs once the
-TEST_USER_* credentials are set. Its output is added below.)
 ```
+
+The full suite, with the two test accounts configured — this is the run that
+proves the ownership boundary:
+
+```
+$ npm run test:all
+
+▶ row level security keeps one user's contacts away from another
+  ✔ A can create a contact, and the database assigns the owner
+  ✔ A can read it back
+  ✔ B does not see it in a full listing
+  ✔ B cannot fetch it even knowing its exact id
+  ✔ B cannot edit it
+  ✔ B cannot steal it by rewriting user_id
+  ✔ B cannot delete it
+  ✔ an unauthenticated request reads nothing at all
+✔ row level security keeps one user's contacts away from another
+✔ a missing name is rejected
+✔ an empty name is rejected
+✔ a whitespace-only name is rejected
+✔ a name longer than 200 characters is rejected
+✔ a valid name is trimmed and its inner whitespace collapsed
+✔ priority accepts exactly high, medium, and low
+✔ an invalid priority is rejected with a readable message
+✔ priority defaults to medium when omitted
+✔ a client-supplied user_id is stripped and never reaches the database
+✔ blank optional fields become null rather than empty strings
+✔ a patch only carries the keys the client actually sent
+✔ a patch that blanks the name is still rejected
+✔ an empty patch is rejected instead of issuing a no-op write
+✔ an unknown sort column falls back to the default instead of being injected
+✔ sorting by priority uses the rank column, not the text column
+✔ an unrecognized priority filter is dropped rather than applied
+✔ search is trimmed, and blank search means no filter
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2098.191625
+```
+
+Every assertion under *row level security keeps one user's contacts away from
+another* is a query made directly against the Neon Data API as a real signed-in
+user, with this project's backend not involved at all.
 
 ---
 

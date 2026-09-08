@@ -8,7 +8,8 @@
     "test": "npm run typecheck && node --test backend/src/**/*.test.ts",
     "test:rls": "node --env-file=.env.local --test backend/src/rls.test.ts",
     "postinstall": "npm --prefix backend install --no-audit --no-fund && npm --prefix frontend install --no-audit --no-fund",
-    "typecheck": "npm --prefix backend run typecheck && npm --prefix frontend run typecheck"
+    "typecheck": "npm --prefix backend run typecheck && npm --prefix frontend run typecheck",
+    "test:all": "npm run typecheck && node --env-file=.env.local --test backend/src/**/*.test.ts"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"
