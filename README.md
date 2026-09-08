@@ -31,8 +31,49 @@ user's contacts to another.
 
 ## Screenshots
 
-| | |
+Every screenshot is of the deployed app.
+
+### Signing up and signing in
+
+| Create an account | Sign in |
 |---|---|
+| ![Create account](docs/02-create-account.png) | ![Sign in](docs/01-sign-in.png) |
+
+### The contact list
+
+Signed in, with search, priority filter, sortable columns, and the signed-in
+account plus its Sign out control in the header.
+
+![Contacts](docs/02-contacts.png)
+
+### Adding a contact
+
+![Add contact](docs/03-add-contact.png)
+
+### Invalid input fails safely
+
+Clearing the name and saving is refused by the server, and the reason is shown
+against the field that caused it.
+
+![Validation error](docs/04-validation-error.png)
+
+### Mobile layout
+
+Below `md` the table becomes stacked cards, so nothing is cut off or scrolled
+sideways on a phone.
+
+<img src="docs/05-mobile.png" alt="Mobile layout" width="360">
+
+### Two accounts, two separate lists
+
+The same app, signed in as two different users at the same time. Neither
+account can see the other's contacts — the ownership boundary from
+[the RLS policies](#authentication-and-rls-ownership), visible in the UI. The
+same property is asserted automatically in `backend/src/rls.test.ts`.
+
+![Two users](docs/06-two-users.png)
+
+---|---|
 | Sign in | ![Sign in](docs/01-sign-in.png) |
 | Contact list | ![Contacts](docs/02-contacts.png) |
 | Add a contact | ![Add contact](docs/03-add-contact.png) |
@@ -511,11 +552,11 @@ your Neon project supports one; otherwise only the stable alias will work.
 
 | Requirement | Evidence |
 |---|---|
-| Automated test passes | [Test output](#output) |
-| Sign in and sign out | `docs/01-sign-in.png` |
+| Automated test passes | [Test output](#output) — 26 tests, 0 failures |
+| Sign in and sign out | `docs/01-sign-in.png`, `docs/02-create-account.png`, `docs/02-contacts.png` |
 | Create, edit, delete, refresh | `docs/02-contacts.png`, `docs/03-add-contact.png` |
-| User A cannot access User B's contacts | `docs/06-two-users.png` and `backend/src/rls.test.ts` |
-| Invalid input fails safely | `docs/04-validation-error.png` |
+| User A cannot access User B's contacts | `docs/06-two-users.png`, and 8 assertions in `backend/src/rls.test.ts` |
+| Invalid input fails safely | `docs/04-validation-error.png`, plus the 400s in `npm run smoke` |
 | Schema and RLS explanation | [Authentication and RLS ownership](#authentication-and-rls-ownership) |
 | No committed secrets | `.gitignore` excludes every `.env` variant except `.env.example`; only placeholder values are committed |
 
