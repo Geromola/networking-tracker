@@ -2,11 +2,12 @@
   "name": "networking-tracker",
   "private": true,
   "type": "module",
-  "workspaces": ["backend", "frontend"],
   "scripts": {
-    "dev": "concurrently -n api,web -c cyan,magenta \"npm run dev -w backend\" \"npm run dev -w frontend\"",
-    "build": "npm run build -w frontend",
-    "test": "node --test backend/src/**/*.test.ts"
+    "dev": "concurrently -n api,web -c cyan,magenta \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",
+    "build": "npm --prefix frontend run build",
+    "test": "node --test backend/src/**/*.test.ts",
+    "test:rls": "node --env-file=.env.local --test backend/src/rls.test.ts",
+    "postinstall": "npm --prefix backend install --no-audit --no-fund && npm --prefix frontend install --no-audit --no-fund"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

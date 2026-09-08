@@ -1,10 +1,12 @@
 node_modules/
 dist/
-.vercel/
 .DS_Store
+*.tsbuildinfo
+
+# Vercel's local project link and OIDC token.
+.vercel
 
 # Secrets: every .env variant stays out of Git, except the placeholder template.
 .env
 .env.*
 !.env.example
-*.tsbuildinfo
