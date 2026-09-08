@@ -5,6 +5,9 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 export default defineConfig({
+  // One .env.local at the repo root feeds both halves of the app, rather than
+  // keeping a second copy of the same values in frontend/.
+  envDir: path.resolve(import.meta.dirname, ".."),
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: { "@": path.resolve(import.meta.dirname, "./src") },
