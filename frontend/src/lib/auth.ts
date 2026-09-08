@@ -20,18 +20,30 @@ export const authClient = createAuthClient(authUrl);
  * Fetch a JWT for the current session, to send to our backend as a bearer token.
  *
  * Neon's auth service exposes the better-auth `jwt` plugin, whose GET /token
- * endpoint mints a signed JWT. This is a different thing from the session
- * token on the session object: that one is an opaque session identifier and
- * would not survive signature verification against JWKS.
+ * endpoint mints a signed JWT. That is a different thing from the token on the
+ * session object: the session token is an opaque identifier, and it would not
+ * survive signature verification against JWKS.
+ *
+ * This is a plain fetch rather than an SDK call because the SDK in this version
+ * exposes no dedicated token method, and `credentials: "include"` is what sends
+ * the auth cookie to the Neon domain from our own origin.
  */
-export async function getAccessToken(): Promise<string | null> {
-  try {
-    const result = await authClient.$fetch<{ token?: string }>("/token", {
-      method: "GET",
-    });
-    const data = (result as { data?: { token?: string } }).data ?? result;
-    return (data as { token?: string })?.token ?? null;
-  } catch {
-    return null;
+export async function getAccessToken(): Promise<string> {
+  const response = await fetch(`${authUrl}/token`, {
+    method: "GET",
+    credentials: "include",
+    headers: { Accept: "application/json" },
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `Could not get an access token (${response.status} from ${authUrl}/token)`,
+    );
   }
+
+  const body = (await response.json()) as { token?: string };
+  if (!body?.token) {
+    throw new Error("The auth service returned no token.");
+  }
+  return body.token;
 }

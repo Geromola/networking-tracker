@@ -48,9 +48,16 @@ const NETWORK_MESSAGE =
   "Could not reach the server. Check your connection and try again.";
 
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
-  const token = await getAccessToken();
-  if (!token) {
-    throw new ApiError("Your session has expired. Please sign in again.", 401);
+  let token: string;
+  try {
+    token = await getAccessToken();
+  } catch (err) {
+    // Surface the real reason rather than reporting every failure as an
+    // expired session, which hid a token-fetch bug during development.
+    throw new ApiError(
+      err instanceof Error ? err.message : "Could not authenticate this request.",
+      401,
+    );
   }
 
   let response: Response;
