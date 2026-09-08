@@ -423,7 +423,33 @@ Then, in the Vercel project settings, add the environment variables:
 leaving it out means a compromised deployment still cannot bypass RLS.
 
 Finally, add the deployed domain to **Trusted origins** in the Neon Auth
-settings, or sign-in will be rejected in production.
+settings:
+
+```
+https://networking-tracker-navy.vercel.app
+http://localhost:5173
+```
+
+**This step is not optional, and it fails in a misleading way.** Without it,
+sign-up and sign-in on the deployed site fail with `Invalid origin` /
+`Invalid callbackURL`, because Better Auth validates the callback URL the SDK
+sends against the trusted-origins list.
+
+Note that a CORS check will *not* catch this. The auth service happily returns
+`access-control-allow-origin` for an untrusted origin, so a passing preflight
+says nothing about whether sign-in will work. To test the real thing, send a
+deliberately invalid sign-up and watch which error comes back — an origin
+complaint means the domain is untrusted, an email complaint means it is fine:
+
+```bash
+curl -s -X POST "$NEON_AUTH_URL/sign-up/email" \
+  -H "Content-Type: application/json" \
+  -d '{"email":"not-an-email","password":"x","name":"probe",
+       "callbackURL":"https://your-domain.vercel.app/"}'
+```
+
+Vercel also mints a fresh hostname for every deployment, so add a wildcard if
+your Neon project supports one; otherwise only the stable alias will work.
 
 ---
 
