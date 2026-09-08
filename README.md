@@ -133,7 +133,7 @@ same property is asserted automatically in `backend/src/rls.test.ts`.
         │    Authorization: Bearer <JWT>
         ▼
 ┌──────────────────────┐
-│  Express API         │  Vercel serverless function
+│  Express API         │  Vercel service (backend)   
 │  backend/            │
 │                      │  • verifies the JWT against Neon's JWKS
 │                      │  • validates the body with Zod
@@ -197,8 +197,9 @@ backend/src/
   validation.ts     Zod schemas and query normalisation  ← unit tested
   data.ts           per-request Data API client, error mapping
   routes/contacts.ts CRUD
-api/index.ts        Vercel function entry; re-exports the Express app
+scripts/smoke.mjs   end-to-end check against a deployed build
 db/schema.sql       table, constraints, RLS policies, grants
+vercel.json         the two service definitions and their routing
 ```
 
 ---
@@ -485,21 +486,17 @@ PASS  PATCH on a deleted contact is 404  — status 404
 
 ## Deployment
 
-The repo deploys as one Vercel project: Vite builds the SPA to
-`frontend/dist`, and `api/index.ts` becomes a serverless function serving the
-Express app. Both are on one domain, so there is no CORS configuration.
+The repo deploys as one Vercel project containing **two services**, declared
+in [`vercel.json`](vercel.json): `frontend` (a static Vite build) and `backend`
+(the Node/Express app). Requests to `/api/*` route to the backend and
+everything else to the frontend, so the two halves deploy and scale
+independently while sharing a single domain — which is why there is no CORS
+configuration anywhere in the codebase.
 
 ```bash
 vercel link
 vercel --prod
 ```
-
-Vercel deploys this repo as **two services**, declared in
-[`vercel.json`](vercel.json): `frontend` (a static Vite build) and `backend`
-(a Node/Express service). Requests to `/api/*` are routed to the backend and
-everything else to the frontend, so the two halves are genuinely separate
-deployments that share one domain — which is why there is no CORS
-configuration anywhere in the codebase.
 
 The backend has its own `tsconfig.json` with `strict` enabled. This is not
 optional: without strict mode TypeScript stops narrowing the
